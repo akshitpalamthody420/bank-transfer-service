@@ -23,3 +23,19 @@ jobs:
         with:
           name: junit-reports
           path: target/surefire-reports/
+  docker:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and start application with PostgreSQL
+        run: docker compose up --build --wait --wait-timeout 180
+      - name: Exercise real HTTP endpoints
+        run: python3 scripts/smoke.py
+      - name: Show container logs
+        if: failure()
+        run: docker compose logs
+      - name: Stop containers
+        if: always()
+        run: docker compose down -v

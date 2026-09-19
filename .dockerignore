@@ -1,0 +1,6 @@
+.git
+target
+.test-postgres
+.env
+.idea
+*.log
